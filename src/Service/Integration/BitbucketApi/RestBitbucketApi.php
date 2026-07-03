@@ -35,13 +35,25 @@ final class RestBitbucketApi implements BitbucketApi
     {
         $this->client->authenticate(Client::AUTH_OAUTH_TOKEN, $accessToken);
 
+        $repositories = [];
+        foreach ($this->pager->fetchAll($this->client->currentUser(), 'listWorkspacePermissions') as $permission) {
+            $workspace = $permission['workspace']['slug'] ?? null;
+            if (!is_string($workspace)) {
+                continue;
+            }
+
+            foreach ($this->pager->fetchAll($this->client->repositories()->workspaces($workspace), 'list', [['role' => 'member']]) as $repository) {
+                $repositories[] = $repository;
+            }
+        }
+
         return new Repositories(array_map(function (array $repo): Repository {
             return new Repository(
                 $repo['uuid'],
                 $repo['full_name'],
                 $repo['links']['html']['href'].'.git'
             );
-        }, $this->pager->fetchAll($this->client->repositories(), 'list', [['role' => 'member']])));
+        }, $repositories));
     }
 
     public function addHook(string $accessToken, string $fullName, string $hookUrl): void

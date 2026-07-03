@@ -78,19 +78,29 @@ final class RestBitbucketApiTest extends TestCase
 
     public function testFetchRepositories(): void
     {
-        $this->pagerMock->method('fetchAll')->willReturn([
+        $currentUser = $this->createMock(CurrentUser::class);
+        $repos = $this->createMock(RepositoriesApi::class);
+        $workspaceOne = $this->createMock(RepositoriesApi\Workspaces::class);
+        $workspaceTwo = $this->createMock(RepositoriesApi\Workspaces::class);
+        $this->clientMock->method('currentUser')->willReturn($currentUser);
+        $this->clientMock->method('repositories')->willReturn($repos);
+        $repos->method('workspaces')->willReturnMap([['repman', $workspaceOne], ['buddy', $workspaceTwo]]);
+
+        $this->pagerMock->method('fetchAll')->willReturnOnConsecutiveCalls(
+            [['workspace' => ['slug' => 'repman']], ['workspace' => ['slug' => 'buddy']]],
             [
                 'uuid' => '099acebd-5158-459e-b05c-30e51b49a1a8',
                 'full_name' => 'repman/left-pad',
-                'links' => ['html' => ['href' => 'https://gitlab.com/repman/left-pad']],
+                'links' => ['html' => ['href' => 'https://vcs.example.test/repman/left-pad']],
             ],
             [
-                'uuid' => '74fb57b9-0820-4165-bba0-892eef8f69b8',
-                'full_name' => 'repman/right-pad',
-                'links' => ['html' => ['href' => 'https://gitlab.com/repman/right-pad']],
+                [
+                    'uuid' => '74fb57b9-0820-4165-bba0-892eef8f69b8',
+                    'full_name' => 'buddy/right-pad',
+                    'links' => ['html' => ['href' => 'https://vcs.example.test/buddy/right-pad']],
+                ],
             ],
-        ]);
-        $this->clientMock->method('repositories')->willReturn($this->createMock(RepositoriesApi::class));
+        );
 
         self::assertEquals(new Repositories([
             new Repository('099acebd-5158-459e-b05c-30e51b49a1a8', 'repman/left-pad', 'https://gitlab.com/repman/left-pad.git'),
