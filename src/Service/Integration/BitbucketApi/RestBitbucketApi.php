@@ -36,7 +36,7 @@ final class RestBitbucketApi implements BitbucketApi
         $this->client->authenticate(Client::AUTH_OAUTH_TOKEN, $accessToken);
 
         $repositories = [];
-        foreach ($this->pager->fetchAll($this->client->currentUser(), 'listWorkspacePermissions') as $permission) {
+        foreach ($this->client->currentUser()->workspaces()->list()['values'] as $permission) {
             $workspace = $permission['workspace']['slug'] ?? null;
             if (!is_string($workspace)) {
                 continue;
