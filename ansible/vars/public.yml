@@ -5,8 +5,8 @@ server:
     locale: en_US en_US.UTF-8 pl_PL pl_PL.UTF-8
 
 system_user: repman
-app_git_repo: 'https://github.com/repman-io/repman'
-app_git_version: master
+app_git_repo: 'https://github.com/radu-snappy/repman'
+app_git_version: bitbucket-change-change-2770
 app_version: "{{ app_git_version }}"
 app_root: /var/www/repman
 app_current_dir: "{{ app_root }}/current"
