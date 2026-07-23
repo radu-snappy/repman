@@ -42,6 +42,11 @@
     optimize_autoloader: yes
   become_user: "{{ system_user }}"
 
+- name: Remove log directory created by composer install due to deprication warnings
+  file:
+    path: "{{ app_current_release_dir }}/var/log"
+    state: absent
+
 - name: Create symlinks to shared folders
   file:
     src: "{{ app_shared_dir }}/{{ item }}"
