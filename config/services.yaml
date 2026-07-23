@@ -132,6 +132,7 @@ services:
             - '@Psr\Http\Message\StreamFactoryInterface'
 
     Bitbucket\Client:
+        class: Buddy\Repman\Patches\Bitbucket\Client
         arguments:
             - '@Bitbucket\HttpClient\Builder'
 
