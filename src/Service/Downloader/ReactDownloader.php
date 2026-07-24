@@ -101,6 +101,10 @@ final class ReactDownloader implements Downloader
 
     private function userAgent(): string
     {
+        // Packagist returns 403 when the Repman/x.y.z user-agent string is presented.
+        // But we don't have to lie that we're Chrome or Firefox just yet.
+        return "Repman";
+        /*
         return sprintf(
             'Repman/%s (%s; %s; %s)',
             Kernel::REPMAN_VERSION,
@@ -108,6 +112,7 @@ final class ReactDownloader implements Downloader
             php_uname('r'),
             'PHP '.PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION.'.'.PHP_RELEASE_VERSION
         );
+         */
     }
 
     /**
